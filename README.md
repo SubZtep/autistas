@@ -38,18 +38,21 @@ autistas/
 ### Initial Setup
 
 1. **Clone the repository**
+
    ```bash
-   git clone <your-repo-url>
+   git clone git@github.com:SubZtep/autistas.git
    cd autistas
    ```
 
 2. **Install dependencies**
+
 ```bash
 # From the repo root, install all workspace deps
-pnpm -w install
+pnpm install -r
 ```
 
 3. **Set up environment variables**
+
    ```bash
    # Backend
    cd backend
@@ -81,6 +84,7 @@ pnpm run mobile
 ### Running the Backend
 
 **Option 1: Docker Compose (Recommended)**
+
 ```bash
 # From root directory
 docker-compose up -d
@@ -93,6 +97,7 @@ docker-compose down
 ```
 
 **Option 2: Local Development**
+
 ```bash
 # Make sure PostgreSQL is running locally
 cd backend
@@ -102,11 +107,13 @@ pnpm run dev
 ### Health Check
 
 Once the backend is running:
+
 ```bash
 curl http://localhost:3000/health
 ```
 
 Expected response:
+
 ```json
 {
   "status": "ok",
@@ -121,16 +128,19 @@ Expected response:
 ### Mobile App (EAS Build)
 
 1. **Install EAS CLI**
+
    ```bash
    pnpm add -g eas-cli
    ```
 
 2. **Login to Expo**
+
    ```bash
    eas login
    ```
 
 3. **Configure and build**
+
    ```bash
    cd mobile
 
@@ -154,13 +164,13 @@ docker run -p 3000:3000 \
 
 ## Deployment
 
-### Backend on DigitalOcean
+### Backend on Hetzner
 
-1. **Create a Droplet or use App Platform**
-2. **Set up PostgreSQL database** (Managed Database recommended)
+1. **Create a Hetzner Cloud server**
+2. **Set up PostgreSQL database** (Hetzner Managed DB recommended)
 3. **Deploy using Docker**
-   - Push image to Docker Hub or DigitalOcean Container Registry
-   - Pull and run on your droplet
+   - Push image to Docker Hub or Hetzner Container Registry
+   - Pull and run on your server
 4. **Set environment variables** (DATABASE_URL, LLM_API_URL, etc.)
 
 ### Mobile App Distribution
@@ -172,6 +182,7 @@ docker run -p 3000:3000 \
 ## Development Workflow
 
 ### Mobile Development
+
 ```bash
 pnpm run mobile          # Start Expo dev server
 pnpm run mobile:ios      # Run on iOS
@@ -179,11 +190,13 @@ pnpm run mobile:android  # Run on Android
 ```
 
 ### Backend Development
+
 ```bash
 pnpm run backend:dev     # Start backend dev server with hot reload
 ```
 
 ### Database Management
+
 ```bash
 cd backend
 pnpm run db:generate     # Generate migrations from schema changes
@@ -196,6 +209,7 @@ pnpm run db:studio       # Open Drizzle Studio (database GUI)
 The backend is configured to connect to a self-hosted LLM. Update these settings:
 
 1. **In backend/.env**:
+
    ```
    LLM_API_URL=http://your-home-pc-ip:5001
    LLM_API_KEY=your_api_key_if_needed
@@ -211,12 +225,14 @@ The chat route (`backend/src/routes/chat.ts`) is ready for you to implement the 
 ## Tech Stack
 
 ### Mobile
+
 - **Framework**: Expo (React Native)
 - **Language**: TypeScript
 - **UI**: React Native components with custom theming
 - **State**: React Context (Theme)
 
 ### Backend
+
 - **Framework**: Hono
 - **Runtime**: Node.js 22
 - **Database**: PostgreSQL
@@ -224,20 +240,10 @@ The chat route (`backend/src/routes/chat.ts`) is ready for you to implement the 
 - **Language**: TypeScript
 
 ### DevOps
+
 - **CI/CD**: GitHub Actions
 - **Containerization**: Docker
 - **Build System**: EAS (Expo Application Services)
-
-## Next Steps
-
-- [ ] Implement LLM integration in backend
-- [ ] Add authentication/user management
-- [ ] Implement hamburger menu navigation
-- [ ] Add more features to the chat (voice input, image sharing, etc.)
-- [ ] Create content management system
-- [ ] Add offline support
-- [ ] Implement push notifications
-- [ ] Add analytics
 
 ## Contributing
 
@@ -245,4 +251,4 @@ This is a prototype project. Feel free to contribute or provide feedback!
 
 ## License
 
-MIT
+Unlicense

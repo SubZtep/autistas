@@ -1,20 +1,20 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { useTheme } from '../contexts/ThemeContext';
+import React from "react"
+import { ScrollView, StyleSheet, Text, View } from "react-native"
+import { useTheme } from "../contexts/ThemeContext"
 
 interface Message {
-  id: string;
-  text: string;
-  isUser: boolean;
-  timestamp: Date;
+  id: string
+  text: string
+  isUser: boolean
+  timestamp: Date
 }
 
 interface FeedProps {
-  messages: Message[];
+  messages: Message[]
 }
 
 export const Feed: React.FC<FeedProps> = ({ messages }) => {
-  const { colors } = useTheme();
+  const { colors } = useTheme()
 
   return (
     <ScrollView
@@ -23,44 +23,35 @@ export const Feed: React.FC<FeedProps> = ({ messages }) => {
     >
       {messages.length === 0 ? (
         <View style={styles.emptyState}>
-          <Text style={[styles.emptyTitle, { color: colors.primary }]}>
-            Welcome! 👋
-          </Text>
+          <Text style={[styles.emptyTitle, { color: colors.primary }]}>Welcome! 👋</Text>
           <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
-            Start a conversation below.{'\n'}
+            Start a conversation below.{"\n"}
             I'm here to help!
           </Text>
         </View>
       ) : (
-        messages.map((message) => (
+        messages.map(message => (
           <View
             key={message.id}
-            style={[
-              styles.messageContainer,
-              message.isUser ? styles.userMessageContainer : styles.aiMessageContainer,
-            ]}
+            style={[styles.messageContainer, message.isUser ? styles.userMessageContainer : styles.aiMessageContainer]}
           >
             <View
               style={[
                 styles.messageBubble,
                 {
-                  backgroundColor: message.isUser
-                    ? colors.userMessage
-                    : colors.aiMessage,
+                  backgroundColor: message.isUser ? colors.userMessage : colors.aiMessage,
                   borderColor: colors.border,
                 },
               ]}
             >
-              <Text style={[styles.messageText, { color: colors.text }]}>
-                {message.text}
-              </Text>
+              <Text style={[styles.messageText, { color: colors.text }]}>{message.text}</Text>
             </View>
           </View>
         ))
       )}
     </ScrollView>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -72,33 +63,33 @@ const styles = StyleSheet.create({
   },
   emptyState: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingHorizontal: 32,
   },
   emptyTitle: {
     fontSize: 28,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 12,
-    textAlign: 'center',
+    textAlign: "center",
   },
   emptyText: {
     fontSize: 16,
-    textAlign: 'center',
+    textAlign: "center",
     lineHeight: 24,
   },
   messageContainer: {
     marginBottom: 12,
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   userMessageContainer: {
-    justifyContent: 'flex-end',
+    justifyContent: "flex-end",
   },
   aiMessageContainer: {
-    justifyContent: 'flex-start',
+    justifyContent: "flex-start",
   },
   messageBubble: {
-    maxWidth: '80%',
+    maxWidth: "80%",
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderRadius: 20,
@@ -108,4 +99,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 22,
   },
-});
+})

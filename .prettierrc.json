@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json.schemastore.org/prettierrc",
+  "semi": false,
+  "printWidth": 120,
+  "arrowParens": "avoid",
+  "overrides": [
+    {
+      "files": [".prettierrc.json", "tsconfig.base.json", "tsconfig.json"],
+      "options": {
+        "parser": "json",
+        "printWidth": 80
+      }
+    }
+  ]
+}

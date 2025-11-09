@@ -1,13 +1,21 @@
 {
   "name": "mobile",
-  "version": "1.0.0",
-  "packageManager": "pnpm@9.12.3",
-  "main": "index.ts",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Autistas mobile app",
+  "author": "Andras Serfozo <subztep@gmail.com>",
+  "license": "Unlicense",
+  "packageManager": "pnpm@10.20.0",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check"
   },
   "dependencies": {
     "@react-navigation/native": "^7.1.19",
@@ -21,7 +29,13 @@
   },
   "devDependencies": {
     "@types/react": "~19.1.0",
-    "typescript": "~5.9.2"
-  },
-  "private": true
+    "typescript": "~5.9.2",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "typescript-eslint": "^8.46.3",
+    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-native": "^4.0.0",
+    "prettier": "^3.6.2"
+  }
 }

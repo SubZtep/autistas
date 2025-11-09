@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
-import { Header } from '../components/Header';
-import { Feed } from '../components/Feed';
-import { ChatInput } from '../components/ChatInput';
-import { useTheme } from '../contexts/ThemeContext';
+import React, { useState } from "react"
+import { StyleSheet, View } from "react-native"
+import { ChatInput } from "../components/ChatInput"
+import { Feed } from "../components/Feed"
+import { Header } from "../components/Header"
+import { useTheme } from "../contexts/ThemeContext"
 
 interface Message {
-  id: string;
-  text: string;
-  isUser: boolean;
-  timestamp: Date;
+  id: string
+  text: string
+  isUser: boolean
+  timestamp: Date
 }
 
 export const HomeScreen = () => {
-  const { colors } = useTheme();
-  const [messages, setMessages] = useState<Message[]>([]);
+  const { colors } = useTheme()
+  const [messages, setMessages] = useState<Message[]>([])
 
   const handleSendMessage = (text: string) => {
     const newMessage: Message = {
@@ -22,22 +22,22 @@ export const HomeScreen = () => {
       text,
       isUser: true,
       timestamp: new Date(),
-    };
+    }
 
-    setMessages((prev) => [...prev, newMessage]);
+    setMessages(prev => [...prev, newMessage])
 
     // TODO: Send to backend API
     // For now, just add a placeholder AI response
     setTimeout(() => {
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
-        text: 'Thanks for your message! The AI backend will be connected soon.',
+        text: "Thanks for your message! The AI backend will be connected soon.",
         isUser: false,
         timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, aiResponse]);
-    }, 500);
-  };
+      }
+      setMessages(prev => [...prev, aiResponse])
+    }, 500)
+  }
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -45,11 +45,11 @@ export const HomeScreen = () => {
       <Feed messages={messages} />
       <ChatInput onSend={handleSendMessage} />
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-});
+})

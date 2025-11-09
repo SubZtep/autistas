@@ -1,37 +1,27 @@
-import React, { useState } from 'react';
-import {
-  View,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Platform,
-  KeyboardAvoidingView,
-} from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useTheme } from '../contexts/ThemeContext';
+import React, { useState } from "react"
+import { KeyboardAvoidingView, Platform, StyleSheet, TextInput, TouchableOpacity, View } from "react-native"
+import { useSafeAreaInsets } from "react-native-safe-area-context"
+import { useTheme } from "../contexts/ThemeContext"
 
 interface ChatInputProps {
-  onSend: (message: string) => void;
-  disabled?: boolean;
+  onSend: (message: string) => void
+  disabled?: boolean
 }
 
 export const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false }) => {
-  const { colors } = useTheme();
-  const insets = useSafeAreaInsets();
-  const [message, setMessage] = useState('');
+  const { colors } = useTheme()
+  const insets = useSafeAreaInsets()
+  const [message, setMessage] = useState("")
 
   const handleSend = () => {
     if (message.trim() && !disabled) {
-      onSend(message.trim());
-      setMessage('');
+      onSend(message.trim())
+      setMessage("")
     }
-  };
+  }
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={0}
-    >
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={0}>
       <View
         style={[
           styles.container,
@@ -78,8 +68,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false }
                 style={[
                   styles.sendTriangle,
                   {
-                    borderLeftColor:
-                      message.trim() && !disabled ? colors.surface : colors.textTertiary,
+                    borderLeftColor: message.trim() && !disabled ? colors.surface : colors.textTertiary,
                   },
                 ]}
               />
@@ -88,8 +77,8 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false }
         </View>
       </View>
     </KeyboardAvoidingView>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -98,9 +87,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    gap: 8,
+    flexDirection: "row",
+    alignItems: "flex-end",
   },
   input: {
     flex: 1,
@@ -117,27 +105,28 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: 8,
   },
   sendIcon: {
     width: 20,
     height: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   sendTriangle: {
     width: 0,
     height: 0,
-    backgroundColor: 'transparent',
-    borderStyle: 'solid',
+    backgroundColor: "transparent",
+    borderStyle: "solid",
     borderLeftWidth: 14,
     borderRightWidth: 0,
     borderBottomWidth: 7,
     borderTopWidth: 7,
-    borderRightColor: 'transparent',
-    borderBottomColor: 'transparent',
-    borderTopColor: 'transparent',
+    borderRightColor: "transparent",
+    borderBottomColor: "transparent",
+    borderTopColor: "transparent",
     marginLeft: 2,
   },
-});
+})

@@ -1,51 +1,52 @@
-# Build stage
-FROM node:22-slim AS builder
+FROM node:22.21.0-slim AS builder
 
+ENV NODE_ENV=production \
+  PNPM_HOME="/pnpm" \
+  PATH="/pnpm:$PATH"
+
+RUN apt-get update && apt-get install -y jq && rm -rf /var/lib/apt/lists/*
+
+RUN corepack enable && corepack prepare pnpm@10.20.0 --activate
 WORKDIR /app
 
-# Enable corepack and pnpm
-RUN corepack enable && corepack prepare pnpm@9.12.3 --activate
-
-# Copy package files (and lockfile if present)
 COPY package*.json ./
-COPY pnpm-lock.yaml* ./
-
-# Install dependencies
-RUN pnpm install --prefer-frozen-lockfile
-
-# Copy source code
+COPY pnpm-*.yaml ./
+RUN pnpm install --ignore-scripts --prefer-frozen-lockfile
 COPY . .
 
-# Build the application
+# Point backend tsconfig to a local base file inside the image
+RUN jq '.extends = "./tsconfig.base.json"' tsconfig.json > tsconfig.tmp.json && mv tsconfig.tmp.json tsconfig.json
+
+# Create local tsconfig.base.json (mirrors repo root base)
+RUN printf '%s\n' '{' \
+  '  "compilerOptions": {' \
+  '    "strict": true,' \
+  '    "esModuleInterop": true,' \
+  '    "skipLibCheck": true,' \
+  '    "forceConsistentCasingInFileNames": true,' \
+  '    "resolveJsonModule": true,' \
+  '    "allowSyntheticDefaultImports": true' \
+  '  }' \
+  '}' > tsconfig.base.json
+
 RUN pnpm build
 
-# Production stage
-FROM node:22-slim
+FROM node:22.21.0-slim
 
+ENV NODE_ENV=production \
+  PNPM_HOME="/pnpm" \
+  PATH="/pnpm:$PATH"
+
+RUN corepack enable && corepack prepare pnpm@10.20.0 --activate
 WORKDIR /app
 
-# Enable corepack and pnpm
-RUN corepack enable && corepack prepare pnpm@9.12.3 --activate
-
-# Copy package files (and lockfile if present)
 COPY package*.json ./
-COPY pnpm-lock.yaml* ./
-
-# Install production dependencies only
-RUN pnpm install --prod --prefer-frozen-lockfile
-
-# Copy built application from builder
+COPY pnpm-*.yaml ./
+RUN pnpm install --prod --ignore-scripts --prefer-frozen-lockfile
 COPY --from=builder /app/dist ./dist
-
-# Set environment
-ENV NODE_ENV=production
-
-# Expose port
 EXPOSE 3000
 
-# Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD node -e "require('http').get('http://localhost:3000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
-# Start the application
 CMD ["node", "dist/index.js"]

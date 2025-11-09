@@ -1,4 +1,3 @@
 packages:
-  - 'mobile'
-  - 'backend'
-
+  - "mobile"
+  - "backend"

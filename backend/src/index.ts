@@ -1,58 +1,61 @@
-import { serve } from '@hono/node-server';
-import { Hono } from 'hono';
-import { cors } from 'hono/cors';
-import { logger } from 'hono/logger';
-import { env } from './config/env.js';
-import healthRoute from './routes/health.js';
-import chatRoute from './routes/chat.js';
+import { serve } from "@hono/node-server"
+import { Hono } from "hono"
+import { cors } from "hono/cors"
+import { logger } from "hono/logger"
+import { env } from "./config/env.js"
+import healthRoute from "./routes/health.js"
+import chatRoute from "./routes/chat.js"
 
-const app = new Hono();
+const app = new Hono()
 
 // Middleware
-app.use('*', logger());
+app.use("*", logger())
 app.use(
-  '*',
+  "*",
   cors({
-    origin: env.ALLOWED_ORIGINS === '*' ? '*' : env.ALLOWED_ORIGINS.split(','),
+    origin: env.ALLOWED_ORIGINS === "*" ? "*" : env.ALLOWED_ORIGINS.split(","),
     credentials: true,
-  })
-);
+  }),
+)
 
 // Routes
-app.route('/health', healthRoute);
-app.route('/api/chat', chatRoute);
+app.route("/health", healthRoute)
+app.route("/api/chat", chatRoute)
 
 // Root route
-app.get('/', (c) => {
+app.get("/", c => {
   return c.json({
-    name: 'Autistas API',
-    version: '0.1.0',
+    name: "Autistas API",
+    version: process.env.npm_package_version,
     endpoints: {
-      health: '/health',
-      chat: '/api/chat',
+      health: "/health",
+      chat: "/api/chat",
     },
-  });
-});
+  })
+})
+
+// Favicon - no icon served, avoid 404 noise
+app.get("/favicon.ico", c => c.body(null, 204))
 
 // 404 handler
-app.notFound((c) => {
-  return c.json({ error: 'Not found' }, 404);
-});
+app.notFound(c => {
+  return c.json({ error: "Not found" }, 404)
+})
 
 // Error handler
 app.onError((err, c) => {
-  console.error('Server error:', err);
-  return c.json({ error: 'Internal server error' }, 500);
-});
+  console.error("Server error:", err)
+  return c.json({ error: "Internal server error" }, 500)
+})
 
-const port = Number(env.PORT);
+const port = Number(env.PORT)
 
-console.log(`🚀 Server starting on port ${port}`);
-console.log(`📝 Environment: ${env.NODE_ENV}`);
+console.log(`🚀 Server starting on port ${port}`)
+console.log(`📝 Environment: ${env.NODE_ENV}`)
 
 serve({
   fetch: app.fetch,
   port,
-});
+})
 
-console.log(`✅ Server is running on http://localhost:${port}`);
+console.log(`✅ Server is running on http://localhost:${port}`)

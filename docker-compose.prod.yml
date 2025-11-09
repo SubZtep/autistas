@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:16-alpine
+    image: postgres:18.0-alpine3.22
     container_name: autistas-db
     environment:
       POSTGRES_USER: autistas
@@ -8,11 +8,11 @@ services:
       POSTGRES_DB: autistas
     # Expose only if you need external DB access; otherwise remove the port mapping
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
       - ${POSTGRES_DATA_DIR:-/mnt/volume/autistas/postgres}:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U autistas']
+      test: ["CMD-SHELL", "pg_isready -U autistas"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -29,7 +29,7 @@ services:
       LLM_API_URL: ${LLM_API_URL:-http://host.docker.internal:5001}
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-*}
     ports:
-      - '3000:3000'
+      - "3000:3000"
     depends_on:
       postgres:
         condition: service_healthy
@@ -45,5 +45,3 @@ services:
       - WATCHTOWER_CLEANUP=true
       - WATCHTOWER_POLL_INTERVAL=300
     restart: unless-stopped
-
-

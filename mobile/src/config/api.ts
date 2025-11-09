@@ -9,14 +9,14 @@
 // Physical device: use your computer's IP address on the local network
 
 const DEV_API_URL = __DEV__
-  ? 'http://localhost:3000' // Change this to your local IP if testing on physical device
-  : 'https://api.autistas.com'; // Production API URL
+  ? "http://localhost:3000" // Change this to your local IP if testing on physical device
+  : "https://static.249.244.62.46.clients.your-server.de" // Production API URL
 
 export const API_CONFIG = {
   baseUrl: DEV_API_URL,
   endpoints: {
-    health: '/health',
-    chat: '/api/chat',
+    health: "/health",
+    chat: "/api/chat",
   },
   timeout: 30000, // 30 seconds
-};
+}

@@ -1,11 +1,11 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useTheme } from '../contexts/ThemeContext';
+import React from "react"
+import { Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { useSafeAreaInsets } from "react-native-safe-area-context"
+import { useTheme } from "../contexts/ThemeContext"
 
 export const Header = () => {
-  const { colors } = useTheme();
-  const insets = useSafeAreaInsets();
+  const { colors } = useTheme()
+  const insets = useSafeAreaInsets()
 
   return (
     <View
@@ -34,8 +34,8 @@ export const Header = () => {
         <View style={styles.menuButton} />
       </View>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -52,17 +52,17 @@ const styles = StyleSheet.create({
     }),
   },
   content: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
   menuButton: {
     width: 40,
     height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   menuLine: {
     width: 24,
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    fontWeight: '600',
+    fontWeight: "600",
     letterSpacing: 0.3,
   },
-});
+})
