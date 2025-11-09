@@ -25,7 +25,6 @@ Thumbs.db
 *~
 
 # Database
-drizzle/
 *.db
 *.sqlite
 
@@ -38,4 +37,3 @@ mobile/.expo-shared/
 
 # Backend specific
 backend/dist/
-backend/drizzle/
