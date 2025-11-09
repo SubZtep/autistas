@@ -44,6 +44,7 @@ COPY package*.json ./
 COPY pnpm-*.yaml ./
 RUN pnpm install --prod --ignore-scripts --prefer-frozen-lockfile
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/drizzle ./drizzle
 EXPOSE 3000
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \

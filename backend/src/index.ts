@@ -5,9 +5,13 @@ import { logger } from "hono/logger"
 import https from "https"
 import { readFileSync } from "node:fs"
 import { env } from "./config/env.js"
+import { runMigrations } from "./db/migrate.js"
 import chatRoute from "./routes/chat.js"
 import healthRoute from "./routes/health.js"
 import robotsRoute from "./routes/robots.js"
+
+// Run migrations before starting the server
+await runMigrations()
 
 const app = new Hono()
 
