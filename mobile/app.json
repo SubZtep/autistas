@@ -2,7 +2,6 @@
   "expo": {
     "name": "Autistas",
     "slug": "autistas",
-    "sdkVersion": "54.0.23",
     "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -22,10 +21,16 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.subztep.autistas"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "51a3b751-1a47-46a9-a833-881f1269be77"
+      }
     }
   }
 }
