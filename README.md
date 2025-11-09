@@ -14,6 +14,7 @@ autistas/
 ## Features
 
 - **Mobile App (Expo)**
+
   - Clean, calm UI with accessibility in mind
   - Automatic dark/light mode detection
   - Chat interface with AI assistant
@@ -150,6 +151,28 @@ Expected response:
    # Build for Android
    eas build --platform android --profile preview
    ```
+
+#### Notes about SDK detection and working directory
+
+- EAS detects the Expo project config from the current working directory. If you run `eas build` from the repo root, EAS may not find the `mobile/` app configuration and can fall back to defaults or produce warnings such as "SDK < 41".
+- Always run EAS from the `mobile/` directory (recommended):
+
+```bash
+cd mobile
+eas build --platform android --profile preview
+```
+
+- If you need to run from the repo root in scripts, wrap the command:
+
+```bash
+( cd mobile && eas build --platform android --profile preview )
+```
+
+- Make sure `mobile/app.json` includes an explicit `sdkVersion` that matches the `expo` package you depend on (for example, expo@^54 -> `"sdkVersion": "54.0.0"`). This helps EAS detect the correct SDK without prompting.
+
+- Note: this repository also includes a top-level `app.json` (used by some workflows) with `sdkVersion: "54.0.23"`. To avoid ambiguity, prefer running EAS in `mobile/` so it uses the mobile app config.
+
+- EAS will also use the Node version configured in your environment (it may read `.nvmrc`); if you see a Node version message, use Node 22.x as the project expects.
 
 ### Backend (Docker)
 
