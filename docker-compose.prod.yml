@@ -25,15 +25,25 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3000
+      HTTPS_PORT: 3000
       DATABASE_URL: postgresql://autistas:${POSTGRES_PASSWORD:-autistas_prod_password}@postgres:5432/autistas
       LLM_API_URL: ${LLM_API_URL:-http://host.docker.internal:5001}
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-*}
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
     ports:
-      - "3000:3000"
+      - "443:3000"
+    volumes:
+      - ./backend/certs:/app/certs:ro
     depends_on:
       postgres:
         condition: service_healthy
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -k -fsS https://localhost:3000/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      start_period: 5s
+      retries: 3
 
   watchtower:
     image: containrrr/watchtower
