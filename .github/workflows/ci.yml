@@ -70,7 +70,7 @@ jobs:
         with:
           context: ./backend
           push: true
-          tags: ${{ secrets.DOCKER_IMAGE }}:latest
+          tags: ${{ secrets.DOCKER_IMAGE }}
 
   mobile-check:
     name: Mobile App Check
