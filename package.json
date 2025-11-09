@@ -1,0 +1,12 @@
+{
+  "name": "autistas",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@9.12.3",
+  "description": "Mobile app to help parents and caregivers of kids with autism",
+  "scripts": {
+    "mobile": "pnpm --filter mobile start",
+    "mobile:ios": "pnpm --filter mobile ios",
+    "mobile:android": "pnpm --filter mobile android"
+  }
+}

@@ -1,0 +1,38 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: autistas-db
+    environment:
+      POSTGRES_USER: autistas
+      POSTGRES_PASSWORD: autistas_dev_password
+      POSTGRES_DB: autistas
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U autistas']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: autistas-backend
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: postgresql://autistas:autistas_dev_password@postgres:5432/autistas
+      LLM_API_URL: ${LLM_API_URL:-http://host.docker.internal:5001}
+      ALLOWED_ORIGINS: '*'
+    ports:
+      - '3000:3000'
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
