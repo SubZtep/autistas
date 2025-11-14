@@ -1,4 +1,6 @@
+/docs/data
 dist/
 node_modules/
+.pnpm-store/
 .env
 tsconfig.tsbuildinfo
