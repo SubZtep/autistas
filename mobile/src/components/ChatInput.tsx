@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { KeyboardAvoidingView, Platform, StyleSheet, TextInput, TouchableOpacity, View } from "react-native"
+import { Keyboard, KeyboardAvoidingView, Platform, StyleSheet, TextInput, TouchableOpacity, View } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { useTheme } from "../contexts/ThemeContext"
 
@@ -17,6 +17,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false }
     if (message.trim() && !disabled) {
       onSend(message.trim())
       setMessage("")
+      Keyboard.dismiss()
     }
   }
 
@@ -46,7 +47,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false }
             placeholderTextColor={colors.textTertiary}
             value={message}
             onChangeText={setMessage}
-            multiline
+            // multiline
             maxLength={1000}
             editable={!disabled}
             onSubmitEditing={handleSend}
@@ -92,8 +93,9 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    minHeight: 44,
-    maxHeight: 120,
+    height: 44,
+    // minHeight: 44,
+    // maxHeight: 120,
     borderWidth: 1,
     borderRadius: 22,
     paddingHorizontal: 16,

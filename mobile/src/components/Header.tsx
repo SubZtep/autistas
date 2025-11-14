@@ -1,62 +1,81 @@
-import React from "react"
-import { Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import Constants from "expo-constants"
+import React, { useState } from "react"
+import { Modal, Platform, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { useTheme } from "../contexts/ThemeContext"
 
 export const Header = () => {
   const { colors } = useTheme()
   const insets = useSafeAreaInsets()
+  const [menuVisible, setMenuVisible] = useState(false)
+  const version = Constants.expoConfig?.version ?? "0.0.0"
 
   return (
-    <View
-      style={[
-        styles.container,
-        {
-          backgroundColor: colors.surface,
-          paddingTop: insets.top,
-          borderBottomColor: colors.border,
-          shadowColor: colors.shadow,
-        },
-      ]}
-    >
-      <View style={styles.content}>
-        {/* Hamburger menu placeholder */}
-        <TouchableOpacity style={styles.menuButton} onPress={() => {}}>
+    <>
+      <View
+        style={[
+          styles.floatingButton,
+          {
+            top: insets.top + 12,
+            backgroundColor: colors.surface,
+            shadowColor: colors.shadow,
+            borderColor: colors.border,
+          },
+        ]}
+      >
+        <TouchableOpacity onPress={() => setMenuVisible(true)} style={styles.menuButton}>
           <View style={[styles.menuLine, { backgroundColor: colors.text }]} />
           <View style={[styles.menuLine, { backgroundColor: colors.text }]} />
           <View style={[styles.menuLine, { backgroundColor: colors.text }]} />
         </TouchableOpacity>
-
-        {/* App title */}
-        <Text style={[styles.title, { color: colors.primary }]}>Autistas</Text>
-
-        {/* Placeholder for future actions */}
-        <View style={styles.menuButton} />
       </View>
-    </View>
+
+      <Modal animationType="fade" transparent visible={menuVisible} onRequestClose={() => setMenuVisible(false)}>
+        <View style={styles.overlay}>
+          <Pressable style={StyleSheet.absoluteFillObject} onPress={() => setMenuVisible(false)} />
+          <View
+            style={[
+              styles.menu,
+              {
+                backgroundColor: colors.surface,
+                borderColor: colors.border,
+              },
+            ]}
+          >
+            <Text style={[styles.title, { color: colors.primary }]}>Autistas</Text>
+            <Text style={[styles.version, { color: colors.textTertiary }]}>Version {version}</Text>
+            <TouchableOpacity
+              disabled
+              onPress={() => {}}
+              style={[styles.loginButton, { backgroundColor: colors.primary }]}
+            >
+              <Text style={[styles.loginText, { color: colors.surface }]}>Log in</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    </>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    borderBottomWidth: 1,
+  floatingButton: {
+    position: "absolute",
+    left: 16,
+    borderWidth: 1,
+    borderRadius: 24,
+    padding: 8,
+    zIndex: 10,
     ...Platform.select({
       ios: {
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
+        shadowOpacity: 0.2,
         shadowRadius: 3,
       },
       android: {
-        elevation: 3,
+        elevation: 4,
       },
     }),
-  },
-  content: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
   },
   menuButton: {
     width: 40,
@@ -70,9 +89,35 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     marginVertical: 2.5,
   },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.35)",
+  },
+  menu: {
+    width: 260,
+    borderWidth: 1,
+    borderRadius: 18,
+    padding: 24,
+    alignItems: "center",
+    gap: 6,
+  },
   title: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: "600",
-    letterSpacing: 0.3,
+  },
+  version: {
+    fontSize: 14,
+  },
+  loginButton: {
+    marginTop: 16,
+    paddingVertical: 10,
+    paddingHorizontal: 28,
+    borderRadius: 12,
+  },
+  loginText: {
+    fontSize: 16,
+    fontWeight: "600",
   },
 })

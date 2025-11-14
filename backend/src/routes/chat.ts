@@ -1,10 +1,11 @@
-import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
 import type { ChatRequest, ChatResponse, ErrorResponse } from "@autistas/common"
+import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
 import { streamText } from "ai"
-import { createOllama } from "ollama-ai-provider"
-import { env } from "../config/env.js"
-import { db, conversations, messages } from "../db/index.js"
 import { eq } from "drizzle-orm"
+import { createOllama } from "ollama-ai-provider"
+import { SYSTEM_PROMPT } from "../config/ai.js"
+import { env } from "../config/env.js"
+import { conversations, db, messages } from "../db/index.js"
 
 const chat = new OpenAPIHono()
 
@@ -20,14 +21,10 @@ const ChatRequestSchema = z
       example: "Hello! Can you help me understand my child's behavior?",
       description: "The message to send to the AI assistant",
     }),
-    conversationId: z
-      .string()
-      .uuid()
-      .optional()
-      .openapi({
-        example: "123e4567-e89b-12d3-a456-426614174000",
-        description: "Optional conversation ID to continue an existing conversation",
-      }),
+    conversationId: z.string().uuid().optional().openapi({
+      example: "123e4567-e89b-12d3-a456-426614174000",
+      description: "Optional conversation ID to continue an existing conversation",
+    }),
   })
   .openapi("ChatRequest") satisfies z.ZodType<ChatRequest>
 
@@ -64,7 +61,8 @@ const chatRoute = createRoute({
   path: "/",
   tags: ["Chat"],
   summary: "Send a chat message",
-  description: "Send a message to the AI assistant and receive a response. Supports conversation continuity via conversationId.",
+  description:
+    "Send a message to the AI assistant and receive a response. Supports conversation continuity via conversationId.",
   request: {
     body: {
       content: {
@@ -134,10 +132,7 @@ chat.post("/stream", async c => {
 
     if (!conversationId) {
       // Create new conversation
-      const [newConversation] = await db
-        .insert(conversations)
-        .values({})
-        .returning()
+      const [newConversation] = await db.insert(conversations).values({}).returning()
       conversationId = newConversation.id
     }
 
@@ -176,23 +171,19 @@ chat.post("/stream", async c => {
 
           try {
             // Send conversation ID first
-            controller.enqueue(
-              encoder.encode(`data: ${JSON.stringify({ conversationId, type: "id" })}\n\n`)
-            )
+            controller.enqueue(encoder.encode(`data: ${JSON.stringify({ conversationId, type: "id" })}\n\n`))
 
             // Use AI SDK's streamText with Ollama provider
             const result = await streamText({
               model: ollama(env.OLLAMA_MODEL),
               messages: llmMessages,
-              system: env.SYSTEM_PROMPT,
+              system: SYSTEM_PROMPT,
             })
 
             // Stream text chunks
             for await (const textPart of result.textStream) {
               fullResponse += textPart
-              controller.enqueue(
-                encoder.encode(`data: ${JSON.stringify({ text: textPart, type: "chunk" })}\n\n`)
-              )
+              controller.enqueue(encoder.encode(`data: ${JSON.stringify({ text: textPart, type: "chunk" })}\n\n`))
             }
 
             // Save assistant response to database
@@ -209,9 +200,7 @@ chat.post("/stream", async c => {
             console.error("❌ Streaming error:", error)
             console.error("Error details:", JSON.stringify(error, null, 2))
             controller.enqueue(
-              encoder.encode(
-                `data: ${JSON.stringify({ type: "error", error: "Failed to generate response" })}\n\n`
-              )
+              encoder.encode(`data: ${JSON.stringify({ type: "error", error: "Failed to generate response" })}\n\n`),
             )
             controller.close()
           }
@@ -224,7 +213,7 @@ chat.post("/stream", async c => {
           "Cache-Control": "no-cache",
           Connection: "keep-alive",
         },
-      }
+      },
     )
   } catch (error) {
     console.error("Chat error:", error)

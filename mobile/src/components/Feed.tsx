@@ -31,11 +31,8 @@ export const Feed: React.FC<FeedProps> = ({ messages }) => {
     >
       {messages.length === 0 ? (
         <View style={styles.emptyState}>
-          <Text style={[styles.emptyTitle, { color: colors.primary }]}>Welcome! 👋</Text>
-          <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
-            Start a conversation below.{"\n"}
-            I'm here to help!
-          </Text>
+          <Text style={[styles.emptyTitle, { color: colors.primary }]}>Hello! 👋</Text>
+          <Text style={[styles.emptyText, { color: colors.textSecondary }]}>I’m with you.</Text>
         </View>
       ) : (
         messages.map(message => (
