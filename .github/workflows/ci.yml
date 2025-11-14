@@ -102,3 +102,43 @@ jobs:
 
       - name: Check TypeScript
         run: pnpm --filter mobile exec tsc --noEmit
+
+  version-bump:
+    name: Apply Version Bump
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [backend-test, mobile-check]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.21.0"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10.20.0"
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install -r
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Apply version bumps
+        uses: bahulneel/action-version@v0.47.3
+        with:
+          strategy: 'apply-bump'
+          base: 'main'
+          branch: 'main'
+          tag_prereleases: false
