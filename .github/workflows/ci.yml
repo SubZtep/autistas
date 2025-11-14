@@ -65,7 +65,7 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ env.DOCKERHUB_USERNAME }}
+          username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: 🍺 Build and Push Docker image
@@ -76,7 +76,7 @@ jobs:
           # Specify Dockerfile location inside the backend folder
           file: ./backend/Dockerfile
           push: true
-          tags: ${{ env.DOCKER_IMAGE }}
+          tags: ${{ vars.DOCKER_IMAGE }}
 
   mobile-check:
     name: Mobile App Check
