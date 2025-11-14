@@ -30,7 +30,7 @@ export default {
       package: "com.subztep.autistas",
     },
     web: {
-      favicon: "./assets/favicon.ico",
+      favicon: "./assets/appicon.png",
     },
     extra: {
       eas: {

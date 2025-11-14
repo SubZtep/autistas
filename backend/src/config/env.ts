@@ -9,8 +9,8 @@ export const env = {
   DATABASE_URL: process.env.DATABASE_URL || "postgresql://localhost:5432/autistas",
 
   // Ollama
-  OLLAMA_BASE_URL: process.env.OLLAMA_BASE_URL || "http://localhost:11434",
-  OLLAMA_MODEL: process.env.OLLAMA_MODEL || "smollm2",
+  OLLAMA_BASE_URL: process.env.OLLAMA_BASE_URL!,
+  OLLAMA_MODEL: process.env.OLLAMA_MODEL!,
 
   // CORS
   ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS || "*",

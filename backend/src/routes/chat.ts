@@ -1,18 +1,12 @@
 import type { ChatRequest, ChatResponse, ErrorResponse } from "@autistas/common"
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
-import { streamText } from "ai"
 import { eq } from "drizzle-orm"
-import { createOllama } from "ollama-ai-provider"
 import { SYSTEM_PROMPT } from "../config/ai.js"
 import { env } from "../config/env.js"
 import { conversations, db, messages } from "../db/index.js"
+import { streamOllamaChat } from "../lib/ollama-stream.js"
 
 const chat = new OpenAPIHono()
-
-// Create Ollama provider instance with custom baseURL
-const ollama = createOllama({
-  baseURL: `${env.OLLAMA_BASE_URL}/api`,
-})
 
 // Request schema - mirrors ChatRequestSchema from @autistas/common with OpenAPI metadata
 const ChatRequestSchema = z
@@ -173,18 +167,24 @@ chat.post("/stream", async c => {
             // Send conversation ID first
             controller.enqueue(encoder.encode(`data: ${JSON.stringify({ conversationId, type: "id" })}\n\n`))
 
-            // Use AI SDK's streamText with Ollama provider
-            const result = await streamText({
-              model: ollama(env.OLLAMA_MODEL),
+            // Use custom Ollama streaming implementation
+            console.log("📝 Starting Ollama stream...")
+            let chunkCount = 0
+
+            const stream = streamOllamaChat({
+              baseURL: env.OLLAMA_BASE_URL,
+              model: env.OLLAMA_MODEL,
               messages: llmMessages,
               system: SYSTEM_PROMPT,
             })
 
-            // Stream text chunks
-            for await (const textPart of result.textStream) {
-              fullResponse += textPart
-              controller.enqueue(encoder.encode(`data: ${JSON.stringify({ text: textPart, type: "chunk" })}\n\n`))
+            for await (const textChunk of stream) {
+              chunkCount++
+              fullResponse += textChunk
+              controller.enqueue(encoder.encode(`data: ${JSON.stringify({ text: textChunk, type: "chunk" })}\n\n`))
             }
+
+            console.log(`✅ Stream complete. Received ${chunkCount} chunks, total length: ${fullResponse.length}`)
 
             // Save assistant response to database
             await db.insert(messages).values({

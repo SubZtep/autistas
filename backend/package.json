@@ -28,7 +28,7 @@
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.44.7",
     "hono": "^4.10.4",
-    "ollama-ai-provider": "^0.16.1",
+    "ollama-ai-provider": "^1.2.0",
     "postgres": "^3.4.7",
     "zod": "^4.1.12"
   },

@@ -1,6 +1,7 @@
-import React, { useState } from "react"
+import React, { useMemo, useState } from "react"
 import { Keyboard, KeyboardAvoidingView, Platform, StyleSheet, TextInput, TouchableOpacity, View } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
+import { getInputPlaceholder } from "../config/msg"
 import { useTheme } from "../contexts/ThemeContext"
 
 interface ChatInputProps {
@@ -12,10 +13,21 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false }
   const { colors } = useTheme()
   const insets = useSafeAreaInsets()
   const [message, setMessage] = useState("")
+  const inputPlaceholder = useMemo(() => getInputPlaceholder(), [])
+
+  const getUserMessage = () => {
+    if (disabled) return ""
+    let msg = message.trim()
+    if (!msg && inputPlaceholder.startsWith("Try ")) {
+      msg = inputPlaceholder.replace("Try ", "").slice(1, -1)
+    }
+    return msg
+  }
 
   const handleSend = () => {
-    if (message.trim() && !disabled) {
-      onSend(message.trim())
+    const msg = getUserMessage()
+    if (msg) {
+      onSend(msg)
       setMessage("")
       Keyboard.dismiss()
     }
@@ -43,33 +55,31 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false }
                 color: colors.text,
               },
             ]}
-            placeholder={'Try "what is regression?"'}
+            placeholder={inputPlaceholder}
             placeholderTextColor={colors.textTertiary}
             value={message}
             onChangeText={setMessage}
-            // multiline
             maxLength={1000}
             editable={!disabled}
             onSubmitEditing={handleSend}
-            blurOnSubmit={false}
           />
 
           <TouchableOpacity
             style={[
               styles.sendButton,
               {
-                backgroundColor: message.trim() && !disabled ? colors.primary : colors.border,
+                backgroundColor: getUserMessage() ? colors.primary : colors.border,
               },
             ]}
             onPress={handleSend}
-            disabled={!message.trim() || disabled}
+            disabled={!getUserMessage()}
           >
             <View style={styles.sendIcon}>
               <View
                 style={[
                   styles.sendTriangle,
                   {
-                    borderLeftColor: message.trim() && !disabled ? colors.surface : colors.textTertiary,
+                    borderLeftColor: getUserMessage() ? colors.surface : colors.textTertiary,
                   },
                 ]}
               />
@@ -93,9 +103,7 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    height: 44,
-    // minHeight: 44,
-    // maxHeight: 120,
+    height: 66,
     borderWidth: 1,
     borderRadius: 22,
     paddingHorizontal: 16,

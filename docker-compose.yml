@@ -25,8 +25,8 @@ services:
       NODE_ENV: production
       PORT: 3000
       DATABASE_URL: postgresql://autistas:autistas_dev_password@postgres:5432/autistas
-      OLLAMA_BASE_URL: http://host.docker.internal:11434
-      OLLAMA_MODEL: smollm2
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL}
+      OLLAMA_MODEL: ${OLLAMA_MODEL}
       ALLOWED_ORIGINS: "*"
     ports:
       - "3000:3000"

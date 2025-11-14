@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react"
 import { ScrollView, StyleSheet, Text, View } from "react-native"
+import { getWelcomeMessage } from "../config/msg"
 import { useTheme } from "../contexts/ThemeContext"
 
 interface Message {
@@ -23,6 +24,8 @@ export const Feed: React.FC<FeedProps> = ({ messages }) => {
     scrollViewRef.current?.scrollToEnd({ animated: true })
   }, [messages])
 
+  const welcome = getWelcomeMessage()
+
   return (
     <ScrollView
       ref={scrollViewRef}
@@ -31,8 +34,8 @@ export const Feed: React.FC<FeedProps> = ({ messages }) => {
     >
       {messages.length === 0 ? (
         <View style={styles.emptyState}>
-          <Text style={[styles.emptyTitle, { color: colors.primary }]}>Hello! 👋</Text>
-          <Text style={[styles.emptyText, { color: colors.textSecondary }]}>I’m with you.</Text>
+          <Text style={[styles.emptyTitle, { color: colors.primary }]}>{welcome.header}</Text>
+          <Text style={[styles.emptyText, { color: colors.textSecondary }]}>{welcome.body}</Text>
         </View>
       ) : (
         messages.map(message => (
