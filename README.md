@@ -12,7 +12,7 @@
 
 # :rainbow::sparkler: Autistas
 
-~~Support~~_Info_ app for the greater good. :shipit:
+~~Support~~Info app for the greater good. :shipit:
 
 Powered by a self-hosted LLM that keeps user data in-house.
 
