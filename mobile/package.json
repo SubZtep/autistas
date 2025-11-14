@@ -18,6 +18,7 @@
     "format:check": "prettier . --check"
   },
   "dependencies": {
+    "@autistas/common": "workspace:*",
     "@react-navigation/native": "^7.1.19",
     "@react-navigation/native-stack": "^7.6.2",
     "expo": "^54.0.23",
@@ -29,13 +30,9 @@
   },
   "devDependencies": {
     "@types/react": "^19.1.10",
-    "typescript": "^5.9.2",
-    "eslint": "^9.39.1",
-    "eslint-config-prettier": "^10.1.8",
-    "typescript-eslint": "^8.46.3",
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-native": "^4.0.0",
-    "prettier": "^3.6.2"
+    "typescript": "^5.9.2"
   }
 }

@@ -1,50 +1,50 @@
 FROM node:22.21.0-slim AS builder
 
-ENV NODE_ENV=production \
-  PNPM_HOME="/pnpm" \
+ENV PNPM_HOME="/pnpm" \
   PATH="/pnpm:$PATH"
 
-RUN apt-get update && apt-get install -y jq && rm -rf /var/lib/apt/lists/*
-
 RUN corepack enable && corepack prepare pnpm@10.20.0 --activate
-WORKDIR /app
+WORKDIR /workspace
 
-COPY package*.json ./
-COPY pnpm-*.yaml ./
-RUN pnpm install --ignore-scripts --prefer-frozen-lockfile
-COPY . .
+# Copy workspace files
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY tsconfig.base.json ./
 
-# Point backend tsconfig to a local base file inside the image
-RUN jq '.extends = "./tsconfig.base.json"' tsconfig.json > tsconfig.tmp.json && mv tsconfig.tmp.json tsconfig.json
+# Copy packages
+COPY packages/common ./packages/common
+COPY backend ./backend
 
-# Create local tsconfig.base.json (mirrors repo root base)
-RUN printf '%s\n' '{' \
-  '  "compilerOptions": {' \
-  '    "strict": true,' \
-  '    "esModuleInterop": true,' \
-  '    "skipLibCheck": true,' \
-  '    "forceConsistentCasingInFileNames": true,' \
-  '    "resolveJsonModule": true,' \
-  '    "allowSyntheticDefaultImports": true' \
-  '  }' \
-  '}' > tsconfig.base.json
+# Install all dependencies
+RUN pnpm install --frozen-lockfile --filter @autistas/common --filter backend
 
-RUN pnpm build
+# Build common package first
+RUN pnpm --filter @autistas/common build
+
+# Build backend
+RUN pnpm --filter backend build
+
+# Prune to production dependencies
+RUN pnpm --filter backend --prod deploy --legacy /prod/backend
+RUN pnpm --filter @autistas/common --prod deploy --legacy /prod/common
 
 FROM node:22.21.0-slim
 
-ENV NODE_ENV=production \
-  PNPM_HOME="/pnpm" \
-  PATH="/pnpm:$PATH"
+ENV NODE_ENV=production
 
-RUN corepack enable && corepack prepare pnpm@10.20.0 --activate
 WORKDIR /app
 
-COPY package*.json ./
-COPY pnpm-*.yaml ./
-RUN pnpm install --prod --ignore-scripts --prefer-frozen-lockfile
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/drizzle ./drizzle
+# Copy production dependencies
+COPY --from=builder /prod/backend/node_modules ./node_modules
+
+# Copy built common package into node_modules
+COPY --from=builder /prod/common/dist ./node_modules/@autistas/common/dist
+COPY --from=builder /prod/common/package.json ./node_modules/@autistas/common/package.json
+
+# Copy built backend
+COPY --from=builder /workspace/backend/dist ./dist
+COPY --from=builder /workspace/backend/drizzle ./drizzle
+COPY --from=builder /workspace/backend/package.json ./
+
 EXPOSE 3000
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \

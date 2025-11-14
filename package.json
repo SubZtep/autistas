@@ -11,23 +11,26 @@
     "mobile": "pnpm --filter mobile start",
     "mobile:ios": "pnpm --filter mobile ios",
     "mobile:android": "pnpm --filter mobile android",
+    "backend": "pnpm --filter backend dev",
+    "common:build": "pnpm --filter @autistas/common build",
+    "common:dev": "pnpm --filter @autistas/common dev",
+    "build": "pnpm --filter @autistas/common build && pnpm --filter backend build",
     "lint": "pnpm -r lint",
     "lint:fix": "pnpm -r lint:fix"
   },
   "pnpm": {
     "overrides": {
-      "drizzle-orm": "^0.44.7",
-      "eslint": "^9.39.1",
-      "@eslint/js": "^9.39.1",
-      "eslint-config-prettier": "^10.1.8",
-      "typescript-eslint": "^8.46.3",
-      "eslint-plugin-react": "^7.37.2",
-      "eslint-plugin-react-hooks": "^4.6.0",
-      "eslint-plugin-react-native": "^4.0.0",
-      "prettier": "^3.6.2"
+      "drizzle-orm": "^0.44.7"
     },
     "ignoredBuiltDependencies": [
       "esbuild"
     ]
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.6.2",
+    "typescript-eslint": "^8.46.3"
   }
 }

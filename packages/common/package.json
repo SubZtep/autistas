@@ -1,0 +1,32 @@
+{
+  "name": "@autistas/common",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Shared types, schemas, and utilities for Autistas",
+  "author": "Andras Serfozo <subztep@gmail.com>",
+  "license": "Unlicense",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check"
+  },
+  "dependencies": {
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.0",
+    "typescript": "^5.9.3"
+  }
+}

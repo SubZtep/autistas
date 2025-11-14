@@ -1,8 +1,9 @@
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
+import type { ChatRequest, ChatResponse, ErrorResponse } from "@autistas/common"
 
 const chat = new OpenAPIHono()
 
-// Request schema
+// Request schema - mirrors ChatRequestSchema from @autistas/common with OpenAPI metadata
 const ChatRequestSchema = z
   .object({
     message: z.string().min(1).openapi({
@@ -18,9 +19,9 @@ const ChatRequestSchema = z
         description: "Optional conversation ID to continue an existing conversation",
       }),
   })
-  .openapi("ChatRequest")
+  .openapi("ChatRequest") satisfies z.ZodType<ChatRequest>
 
-// Response schema
+// Response schema - mirrors ChatResponseSchema from @autistas/common with OpenAPI metadata
 const ChatResponseSchema = z
   .object({
     message: z.string().openapi({
@@ -36,16 +37,16 @@ const ChatResponseSchema = z
       description: "Timestamp of the response",
     }),
   })
-  .openapi("ChatResponse")
+  .openapi("ChatResponse") satisfies z.ZodType<ChatResponse>
 
-// Error response schema
+// Error response schema - mirrors ErrorResponseSchema from @autistas/common with OpenAPI metadata
 const ErrorResponseSchema = z
   .object({
     error: z.string().openapi({
       example: "Message is required",
     }),
   })
-  .openapi("ErrorResponse")
+  .openapi("ErrorResponse") satisfies z.ZodType<Omit<ErrorResponse, "code">>
 
 // Chat route definition
 const chatRoute = createRoute({
@@ -93,7 +94,7 @@ const chatRoute = createRoute({
 
 // Register route
 chat.openapi(chatRoute, async c => {
-  const { message, conversationId } = c.req.valid("json")
+  const { conversationId } = c.req.valid("json")
 
   // TODO: Implement LLM API call
   // For now, return a placeholder response

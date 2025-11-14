@@ -20,6 +20,7 @@
     "format:check": "prettier . --check"
   },
   "dependencies": {
+    "@autistas/common": "workspace:*",
     "@hono/node-server": "^1.19.6",
     "@hono/swagger-ui": "^0.5.2",
     "@hono/zod-openapi": "^1.1.4",
@@ -31,14 +32,8 @@
   },
   "devDependencies": {
     "@types/node": "^24.10.0",
-    "@typescript-eslint/eslint-plugin": "^8.46.3",
-    "@typescript-eslint/parser": "^8.46.3",
     "drizzle-kit": "^0.31.6",
-    "eslint": "^9.39.1",
-    "eslint-config-prettier": "^10.1.8",
-    "prettier": "^3.6.2",
     "tsx": "^4.20.6",
-    "typescript": "^5.9.3",
-    "typescript-eslint": "^8.46.3"
+    "typescript": "^5.9.3"
   }
 }
