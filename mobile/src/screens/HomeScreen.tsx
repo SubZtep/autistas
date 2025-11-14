@@ -1,42 +1,96 @@
-import React, { useState } from "react"
-import { StyleSheet, View } from "react-native"
+import React, { useState, useRef } from "react"
+import { StyleSheet, View, Alert } from "react-native"
 import { ChatInput } from "../components/ChatInput"
 import { Feed } from "../components/Feed"
 import { Header } from "../components/Header"
 import { useTheme } from "../contexts/ThemeContext"
+import { chatAPI } from "../api/chatApi"
 
 interface Message {
   id: string
   text: string
   isUser: boolean
   timestamp: Date
+  isStreaming?: boolean
 }
 
 export const HomeScreen = () => {
   const { colors } = useTheme()
   const [messages, setMessages] = useState<Message[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  const conversationIdRef = useRef<string | undefined>(undefined)
+  const streamingMessageIdRef = useRef<string | null>(null)
 
-  const handleSendMessage = (text: string) => {
-    const newMessage: Message = {
+  const handleSendMessage = async (text: string) => {
+    if (isLoading) return
+
+    // Add user message
+    const userMessage: Message = {
       id: Date.now().toString(),
       text,
       isUser: true,
       timestamp: new Date(),
     }
 
-    setMessages(prev => [...prev, newMessage])
+    setMessages(prev => [...prev, userMessage])
+    setIsLoading(true)
 
-    // TODO: Send to backend API
-    // For now, just add a placeholder AI response
-    setTimeout(() => {
-      const aiResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        text: "Thanks for your message! The AI backend will be connected soon.",
-        isUser: false,
-        timestamp: new Date(),
+    // Create placeholder for AI response
+    const aiMessageId = (Date.now() + 1).toString()
+    streamingMessageIdRef.current = aiMessageId
+
+    const aiMessage: Message = {
+      id: aiMessageId,
+      text: "",
+      isUser: false,
+      timestamp: new Date(),
+      isStreaming: true,
+    }
+
+    setMessages(prev => [...prev, aiMessage])
+
+    // Stream response from backend
+    await chatAPI.streamChat(
+      text,
+      conversationIdRef.current,
+      // onChunk
+      (chunk: string) => {
+        setMessages(prev =>
+          prev.map(msg =>
+            msg.id === aiMessageId
+              ? { ...msg, text: msg.text + chunk }
+              : msg
+          )
+        )
+      },
+      // onDone
+      (conversationId: string) => {
+        conversationIdRef.current = conversationId
+        setMessages(prev =>
+          prev.map(msg =>
+            msg.id === aiMessageId
+              ? { ...msg, isStreaming: false }
+              : msg
+          )
+        )
+        setIsLoading(false)
+        streamingMessageIdRef.current = null
+      },
+      // onError
+      (error: string) => {
+        console.error("Chat error:", error)
+        setMessages(prev =>
+          prev.map(msg =>
+            msg.id === aiMessageId
+              ? { ...msg, text: `Error: ${error}`, isStreaming: false }
+              : msg
+          )
+        )
+        setIsLoading(false)
+        streamingMessageIdRef.current = null
+        Alert.alert("Error", `Failed to get response: ${error}`)
       }
-      setMessages(prev => [...prev, aiResponse])
-    }, 500)
+    )
   }
 
   return (

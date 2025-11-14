@@ -8,9 +8,11 @@ export const env = {
   // Database
   DATABASE_URL: process.env.DATABASE_URL || "postgresql://localhost:5432/autistas",
 
-  // LLM API
-  LLM_API_URL: process.env.LLM_API_URL || "http://localhost:5001",
-  LLM_API_KEY: process.env.LLM_API_KEY || "",
+  // Ollama
+  OLLAMA_BASE_URL: process.env.OLLAMA_BASE_URL || "http://localhost:11434",
+  OLLAMA_MODEL: process.env.OLLAMA_MODEL || "smollm2",
+  SYSTEM_PROMPT:
+    process.env.SYSTEM_PROMPT || "You are a helpful assistant. Answer questions based on the provided context.",
 
   // CORS
   ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS || "*",

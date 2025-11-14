@@ -5,6 +5,7 @@ Mobile app to help parents and caregivers support kids with autism.
 ## Quick Start
 
 ```bash
+OLLAMA_HOST=0.0.0.0:11434 ollama serve
 pnpm install
 docker compose up -d
 pnpm run mobile

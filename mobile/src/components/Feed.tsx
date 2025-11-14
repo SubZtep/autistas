@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useRef, useEffect } from "react"
 import { ScrollView, StyleSheet, Text, View } from "react-native"
 import { useTheme } from "../contexts/ThemeContext"
 
@@ -7,6 +7,7 @@ interface Message {
   text: string
   isUser: boolean
   timestamp: Date
+  isStreaming?: boolean
 }
 
 interface FeedProps {
@@ -15,9 +16,16 @@ interface FeedProps {
 
 export const Feed: React.FC<FeedProps> = ({ messages }) => {
   const { colors } = useTheme()
+  const scrollViewRef = useRef<ScrollView>(null)
+
+  // Auto-scroll to bottom when messages update
+  useEffect(() => {
+    scrollViewRef.current?.scrollToEnd({ animated: true })
+  }, [messages])
 
   return (
     <ScrollView
+      ref={scrollViewRef}
       style={[styles.container, { backgroundColor: colors.background }]}
       contentContainerStyle={styles.contentContainer}
     >
@@ -44,7 +52,10 @@ export const Feed: React.FC<FeedProps> = ({ messages }) => {
                 },
               ]}
             >
-              <Text style={[styles.messageText, { color: colors.text }]}>{message.text}</Text>
+              <Text style={[styles.messageText, { color: colors.text }]}>
+                {message.text}
+                {message.isStreaming && <Text style={styles.cursor}>▊</Text>}
+              </Text>
             </View>
           </View>
         ))
@@ -98,5 +109,9 @@ const styles = StyleSheet.create({
   messageText: {
     fontSize: 16,
     lineHeight: 22,
+  },
+  cursor: {
+    opacity: 0.6,
+    marginLeft: 2,
   },
 })

@@ -9,8 +9,10 @@
 // Physical device: use your computer's IP address on the local network
 
 const DEV_API_URL = __DEV__
-  ? "http://localhost:3000" // Change this to your local IP if testing on physical device
+  ? "http://localhost:3000" // Backend running on port 3000
   : "https://static.249.244.62.46.clients.your-server.de" // Production API URL
+
+export const API_URL = DEV_API_URL
 
 export const API_CONFIG = {
   baseUrl: DEV_API_URL,

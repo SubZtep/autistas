@@ -25,7 +25,9 @@ services:
       NODE_ENV: production
       PORT: 3000
       DATABASE_URL: postgresql://autistas:autistas_dev_password@postgres:5432/autistas
-      LLM_API_URL: ${LLM_API_URL:-http://host.docker.internal:5001}
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
+      OLLAMA_MODEL: smollm2
+      SYSTEM_PROMPT: "You are a helpful assistant. Answer questions based on the provided context."
       ALLOWED_ORIGINS: "*"
     ports:
       - "3000:3000"
@@ -33,6 +35,8 @@ services:
       postgres:
         condition: service_healthy
     restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   web:
     build:
