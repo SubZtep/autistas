@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from "react"
 import { ScrollView, StyleSheet, Text, View } from "react-native"
-import { API_URL } from "../config/api"
 import { useTheme } from "../contexts/ThemeContext"
 
 interface Message {
@@ -35,8 +34,7 @@ export const Feed: React.FC<FeedProps> = ({ messages }) => {
           <Text style={[styles.emptyTitle, { color: colors.primary }]}>Welcome! 👋</Text>
           <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
             Start a conversation below.{"\n"}
-            I'm here to help!{"\n"}
-            API: {API_URL}
+            I'm here to help!
           </Text>
         </View>
       ) : (

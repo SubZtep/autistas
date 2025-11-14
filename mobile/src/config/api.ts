@@ -1,21 +1,34 @@
 /**
  * API Configuration
- * Update these values based on your environment
+ * Values are managed through:
+ * - Development: Local override or app.config.js fallback
+ * - Production: EAS Secret EXPO_PUBLIC_API_URL or app.config.js fallback
  */
 
 import Constants from "expo-constants"
 
-// For development, use your local IP address instead of localhost
-// iOS Simulator: localhost works
-// Android Emulator: use 10.0.2.2 instead of localhost
-// Physical device: use your computer's IP address on the local network
+// Get API URL from expo config (which reads from EXPO_PUBLIC_API_URL env var)
+const getApiUrl = (): string => {
+  const apiUrl = Constants.expoConfig?.extra?.apiUrl
 
-const DEV_API_URL = "http://localhost:3000" // Backend running on port 3000
-const PROD_API_URL =
-  Constants.expoConfig?.extra?.apiUrl ||
-  "https://static.249.244.62.46.clients.your-server.de"
+  // For local development with expo start
+  if (__DEV__) {
+    // Use configured URL or default to localhost for development
+    return apiUrl || "http://localhost:3000"
+  }
 
-export const API_URL = __DEV__ ? DEV_API_URL : PROD_API_URL
+  // For production builds, require EXPO_PUBLIC_API_URL to be set
+  if (!apiUrl) {
+    throw new Error(
+      "EXPO_PUBLIC_API_URL environment variable is required for production builds. " +
+        "Set it via EAS secrets: eas secret:create --name EXPO_PUBLIC_API_URL",
+    )
+  }
+
+  return apiUrl
+}
+
+export const API_URL = getApiUrl()
 
 export const API_CONFIG = {
   baseUrl: API_URL,
