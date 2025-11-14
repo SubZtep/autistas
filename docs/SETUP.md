@@ -1,5 +1,3 @@
-> :warning: Messy notes, not tutorial
-
 ## Backend Service (API)
 
 Get a server, create certs and .env file.
