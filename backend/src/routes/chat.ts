@@ -1,10 +1,17 @@
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
 import type { ChatRequest, ChatResponse, ErrorResponse } from "@autistas/common"
+import { streamText } from "ai"
+import { createOllama } from "ollama-ai-provider"
 import { env } from "../config/env.js"
 import { db, conversations, messages } from "../db/index.js"
 import { eq } from "drizzle-orm"
 
 const chat = new OpenAPIHono()
+
+// Create Ollama provider instance with custom baseURL
+const ollama = createOllama({
+  baseURL: `${env.OLLAMA_BASE_URL}/api`,
+})
 
 // Request schema - mirrors ChatRequestSchema from @autistas/common with OpenAPI metadata
 const ChatRequestSchema = z
@@ -112,9 +119,7 @@ chat.openapi(chatRoute, async c => {
 chat.post("/stream", async c => {
   console.log("📥 Received chat stream request")
   try {
-    const rawBody = await c.req.text()
-    console.log("📦 Raw body:", rawBody)
-    const body = JSON.parse(rawBody)
+    const body = await c.req.json()
     const userMessage = body.message as string
     const providedConversationId = body.conversationId as string | undefined
     console.log("💬 User message:", userMessage)
@@ -156,6 +161,10 @@ chat.post("/stream", async c => {
       content: msg.content,
     }))
 
+    console.log("🤖 Calling Ollama via AI SDK")
+    console.log("🔗 Ollama URL:", env.OLLAMA_BASE_URL)
+    console.log("🎯 Model:", env.OLLAMA_MODEL)
+
     // Collect full response for database storage
     let fullResponse = ""
 
@@ -171,64 +180,19 @@ chat.post("/stream", async c => {
               encoder.encode(`data: ${JSON.stringify({ conversationId, type: "id" })}\n\n`)
             )
 
-            // Build prompt from messages
-            let prompt = ""
-            if (env.SYSTEM_PROMPT) {
-              prompt += `System: ${env.SYSTEM_PROMPT}\n\n`
-            }
-            for (const msg of llmMessages) {
-              prompt += `${msg.role === "user" ? "User" : "Assistant"}: ${msg.content}\n`
-            }
-            prompt += "Assistant:"
-
-            console.log("🤖 Calling Ollama with prompt:", prompt.substring(0, 100))
-            console.log("🔗 Ollama URL:", `${env.OLLAMA_BASE_URL}/api/generate`)
-            console.log("🎯 Model:", env.OLLAMA_MODEL)
-
-            // Stream response from Ollama via HTTP API
-            const response = await fetch(`${env.OLLAMA_BASE_URL}/api/generate`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                model: env.OLLAMA_MODEL,
-                prompt,
-                stream: true,
-              }),
+            // Use AI SDK's streamText with Ollama provider
+            const result = await streamText({
+              model: ollama(env.OLLAMA_MODEL),
+              messages: llmMessages,
+              system: env.SYSTEM_PROMPT,
             })
 
-            console.log("📡 Ollama response status:", response.status)
-
-            if (!response.ok || !response.body) {
-              console.error("❌ Ollama request failed:", response.status, response.statusText)
-              throw new Error("Failed to connect to Ollama")
-            }
-
-            console.log("✅ Ollama streaming started")
-
-            const reader = response.body.getReader()
-            const decoder = new TextDecoder()
-
-            // Stream text chunks from Ollama
-            while (true) {
-              const { done, value } = await reader.read()
-              if (done) break
-
-              const chunk = decoder.decode(value, { stream: true })
-              const lines = chunk.split("\n").filter(line => line.trim())
-
-              for (const line of lines) {
-                try {
-                  const json = JSON.parse(line)
-                  if (json.response) {
-                    fullResponse += json.response
-                    controller.enqueue(
-                      encoder.encode(`data: ${JSON.stringify({ text: json.response, type: "chunk" })}\n\n`)
-                    )
-                  }
-                } catch (e) {
-                  // Skip invalid JSON lines
-                }
-              }
+            // Stream text chunks
+            for await (const textPart of result.textStream) {
+              fullResponse += textPart
+              controller.enqueue(
+                encoder.encode(`data: ${JSON.stringify({ text: textPart, type: "chunk" })}\n\n`)
+              )
             }
 
             // Save assistant response to database
