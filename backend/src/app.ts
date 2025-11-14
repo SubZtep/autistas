@@ -1,5 +1,5 @@
-import { OpenAPIHono } from "@hono/zod-openapi"
 import { swaggerUI } from "@hono/swagger-ui"
+import { OpenAPIHono } from "@hono/zod-openapi"
 import { cors } from "hono/cors"
 import { logger } from "hono/logger"
 import { env } from "./config/env.js"
@@ -39,7 +39,8 @@ app.route("/robots.txt", robotsRoute)
 // Root route
 app.get("/", c => {
   return c.json({
-    name: "Autistas API",
+    name: process.env.npm_package_name,
+    description: process.env.npm_package_description,
     version: process.env.npm_package_version,
   })
 })
@@ -52,7 +53,7 @@ app.doc("/doc", {
   openapi: "3.1.0",
   info: {
     title: "Autistas API",
-    version: "0.1.0",
+    version: process.env.npm_package_version || "n/a",
     description: "API for Autistas - A mobile app to help parents and caregivers of kids with autism",
   },
   servers: [

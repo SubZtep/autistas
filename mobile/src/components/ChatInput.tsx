@@ -42,7 +42,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false }
                 color: colors.text,
               },
             ]}
-            placeholder="Type your message..."
+            placeholder={'Try "what is regression?"'}
             placeholderTextColor={colors.textTertiary}
             value={message}
             onChangeText={setMessage}
