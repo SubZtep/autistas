@@ -13,27 +13,30 @@ pnpm run mobile
 ## Development
 
 ```bash
-pnpm run mobile          # Start Expo (press 'i' for iOS, 'a' for Android)
+pnpm run mobile          # Start Expo (press 'i' for iOS, 'a' for Android, 'w' for web)
 pnpm run backend         # Start backend dev server
 pnpm run build           # Build common + backend
 pnpm run lint            # Lint all packages
+```
+
+### Database Management
+
+```bash
+cd backend
+pnpm db:generate         # Generate migrations from schema
+pnpm db:migrate          # Run migrations
+pnpm db:studio           # Open Drizzle Studio at https://local.drizzle.studio
 ```
 
 ## Structure
 
 ```
 autistas/
-├── mobile/              # Expo React Native app
-├── backend/             # Hono API + PostgreSQL
+├── mobile/              # Expo React Native app (iOS, Android, Web)
+├── backend/             # Hono API server
 ├── packages/common/     # Shared types & schemas (Zod)
-└── docker-compose.yml
+└── docker-compose.yml   # PostgreSQL + backend + web services
 ```
-
-## Stack
-
-Mobile: Expo, React Native, TypeScript
-Backend: Hono, Node.js 22, PostgreSQL, Drizzle ORM
-DevOps: Docker, GitHub Actions, EAS
 
 ## Building
 
@@ -45,10 +48,19 @@ cd mobile && eas build --platform android
 docker compose build
 ```
 
-## Troubleshooting
+## Docker Services
 
-**Port 3000 in use**: `lsof -i :3000`
-**Mobile can't connect**: Use `http://10.0.2.2:3000` on Android emulator, or your local IP on device
+The docker-compose setup includes:
+
+- **postgres** (port 5432): PostgreSQL database
+- **backend** (port 3000): Hono API server
+- **web** (port 8081): Expo web version
+
+```bash
+docker compose up -d         # Start all services
+docker compose up postgres   # Start only database
+docker compose logs -f web   # View web service logs
+```
 
 ## License
 
