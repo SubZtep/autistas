@@ -17,8 +17,8 @@ console.log(`📝 Environment: ${env.NODE_ENV}`)
 // Prefer HTTPS when certs are available; otherwise fall back to HTTP
 try {
   const tlsOptions = {
-    key: readFileSync("./certs/key.pem"),
-    cert: readFileSync("./certs/cert.pem"),
+    cert: readFileSync("./certs/origin.crt"),
+    key: readFileSync("./certs/origin.key"),
   }
 
   const listener = getRequestListener(app.fetch)
