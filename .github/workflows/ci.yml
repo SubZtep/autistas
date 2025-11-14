@@ -13,7 +13,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:18.0-alpine3.22
+        image: postgres:18.1-bookworm
         env:
           POSTGRES_USER: autistas
           POSTGRES_PASSWORD: test_password
@@ -68,7 +68,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and Push Docker image
+      - name: 🍺 Build and Push Docker image
         uses: docker/build-push-action@v5
         with:
           # Use repository root as build context so Dockerfile can COPY root-level files
