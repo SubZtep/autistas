@@ -25,14 +25,14 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3000
-      HTTPS_PORT: 3000
+      HTTPS_PORT: 443
       DATABASE_URL: postgresql://autistas:${POSTGRES_PASSWORD:-autistas_prod_password}@postgres:5432/autistas
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-*}
       OLLAMA_BASE_URL: ${OLLAMA_BASE_URL}
       DOCKERHUB_USERNAME: ${DOCKERHUB_USERNAME}
       DOCKERHUB_TOKEN: ${DOCKERHUB_TOKEN}
     ports:
-      - "443:3000"
+      - "443:443"
     volumes:
       - ./backend/certs:/app/certs:ro
     depends_on:
