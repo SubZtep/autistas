@@ -1,23 +1,23 @@
-import axios from 'axios';
-import { API_URL } from '../config/api';
+import { API_URL } from "../config/api"
+import EventSource from "react-native-sse"
 
 export interface ChatMessage {
-  role: 'user' | 'assistant';
-  content: string;
+  role: "user" | "assistant"
+  content: string
 }
 
 export interface StreamResponse {
-  conversationId?: string;
-  text?: string;
-  type: 'id' | 'chunk' | 'done' | 'error';
-  error?: string;
+  conversationId?: string
+  text?: string
+  type: "id" | "chunk" | "done" | "error"
+  error?: string
 }
 
 export class ChatAPI {
-  private baseURL: string;
+  private baseURL: string
 
   constructor() {
-    this.baseURL = API_URL;
+    this.baseURL = API_URL
   }
 
   /**
@@ -35,75 +35,61 @@ export class ChatAPI {
     onDone: (conversationId: string) => void,
     onError: (error: string) => void,
   ): Promise<void> {
+    let currentConversationId = conversationId
+    let es: EventSource | null = null
+
     try {
-      const response = await fetch(`${this.baseURL}/api/chat/stream`, {
-        method: 'POST',
+      es = new EventSource(`${this.baseURL}/api/chat/stream`, {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           message,
           conversationId,
         }),
-      });
+      })
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      es.addEventListener("message", (event) => {
+        try {
+          const data: StreamResponse = JSON.parse(event.data || "{}")
 
-      const reader = response.body?.getReader();
-      if (!reader) {
-        throw new Error('No response body');
-      }
-
-      const decoder = new TextDecoder();
-      let buffer = '';
-      let currentConversationId = conversationId;
-
-      while (true) {
-        const { done, value } = await reader.read();
-
-        if (done) {
-          break;
-        }
-
-        // Decode the chunk and add to buffer
-        buffer += decoder.decode(value, { stream: true });
-
-        // Process complete messages (SSE format: "data: {json}\n\n")
-        const lines = buffer.split('\n\n');
-        buffer = lines.pop() || ''; // Keep incomplete message in buffer
-
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            try {
-              const data: StreamResponse = JSON.parse(line.slice(6));
-
-              if (data.type === 'id' && data.conversationId) {
-                currentConversationId = data.conversationId;
-              } else if (data.type === 'chunk' && data.text) {
-                onChunk(data.text);
-              } else if (data.type === 'done') {
-                if (currentConversationId) {
-                  onDone(currentConversationId);
-                }
-              } else if (data.type === 'error') {
-                onError(data.error || 'Unknown error');
-              }
-            } catch (parseError) {
-              console.error('Failed to parse SSE message:', parseError);
+          if (data.type === "id" && data.conversationId) {
+            currentConversationId = data.conversationId
+          } else if (data.type === "chunk" && data.text) {
+            onChunk(data.text)
+          } else if (data.type === "done") {
+            if (currentConversationId) {
+              onDone(currentConversationId)
             }
+            es?.close()
+          } else if (data.type === "error") {
+            onError(data.error || "Unknown error")
+            es?.close()
           }
+        } catch (parseError) {
+          console.error("Failed to parse SSE message:", parseError)
         }
-      }
+      })
+
+      es.addEventListener("error", (event) => {
+        console.error("SSE error:", event)
+        const errorMessage =
+          "message" in event && typeof event.message === "string"
+            ? event.message
+            : "Connection error"
+        onError(errorMessage)
+        es?.close()
+      })
     } catch (error) {
+      es?.close()
       if (error instanceof Error) {
-        onError(error.message);
+        onError(error.message)
       } else {
-        onError('Failed to send message');
+        onError("Failed to send message")
       }
     }
   }
 }
 
-export const chatAPI = new ChatAPI();
+export const chatAPI = new ChatAPI()
