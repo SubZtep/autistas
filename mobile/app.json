@@ -34,7 +34,8 @@
     "extra": {
       "eas": {
         "projectId": "51a3b751-1a47-46a9-a833-881f1269be77"
-      }
+      },
+      "apiUrl": "${API_URL}"
     }
   }
 }
