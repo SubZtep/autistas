@@ -29,8 +29,6 @@ services:
       DATABASE_URL: postgresql://autistas:${POSTGRES_PASSWORD:-autistas_prod_password}@postgres:5432/autistas
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-*}
       NODE_TLS_REJECT_UNAUTHORIZED: 0
-      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL}
-      OLLAMA_MODEL: ${OLLAMA_MODEL:-smollm2}
     ports:
       - "443:3000"
     volumes:
