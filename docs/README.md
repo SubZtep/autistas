@@ -1,6 +1,6 @@
 # Setup & Setdown
 
-> ⚠️ Messy notes, not a tutorial
+> ⚠️ Messy notes, not a tutorial.
 
 - [Console commands](CLI.md)
 - [Server setup](SETUP.md)
