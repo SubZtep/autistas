@@ -44,6 +44,9 @@ jobs:
       - name: Install dependencies (workspaces)
         run: pnpm install -r
 
+      - name: Build common package
+        run: pnpm --filter @autistas/common build
+
       - name: Build backend
         run: pnpm --filter backend build
 
