@@ -14,9 +14,11 @@
 -
 - -
 
-### :construction: Screenshot
+### 🚧 Screenshot 🚧 🚧
 
-![Screenshoy](assets/au_screen_0_1.png)
+Common sense beats the guidelines this LLM was trained on. A GPU would probably make a bigger difference anyway. Basic level achieved.
+
+![Screenshot](assets/au_screen_0_1.png)
 
 - -
 
