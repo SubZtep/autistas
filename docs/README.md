@@ -14,6 +14,10 @@
 -
 - -
 
+![App video](assets/au_emulator_240.gif)
+
+- -
+
 ### 🚧 Screenshot 🚧 🚧
 
 Common sense beats the guidelines this LLM was trained on. A GPU would probably make a bigger difference anyway. Basic level achieved with the mobile app, the LLM, and the API in between.
