@@ -21,7 +21,7 @@ export default [
       },
     },
     rules: {
-      // place base rules here if needed
+      "@typescript-eslint/no-explicit-any": "off",
     },
   },
 ]

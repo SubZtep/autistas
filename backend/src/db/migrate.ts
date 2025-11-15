@@ -1,9 +1,7 @@
-import { drizzle } from "drizzle-orm/postgres-js"
-import { migrate } from "drizzle-orm/postgres-js/migrator"
-import postgres from "postgres"
-import { env } from "../config/env.js"
 import { readFileSync, readdirSync } from "fs"
 import { join } from "path"
+import postgres from "postgres"
+import { env } from "../config/env.js"
 
 /**
  * Run database migrations with proper tracking
@@ -13,7 +11,6 @@ export async function runMigrations() {
   console.log("🔄 Running database migrations...")
 
   const migrationClient = postgres(env.DATABASE_URL, { max: 1 })
-  const db = drizzle(migrationClient)
 
   try {
     // Ensure tracking table exists (workaround for Drizzle bug)
@@ -28,14 +25,14 @@ export async function runMigrations() {
     // Get list of migration files
     const migrationsFolder = "./drizzle"
     const migrationFiles = readdirSync(migrationsFolder)
-      .filter((file) => file.endsWith(".sql"))
+      .filter(file => file.endsWith(".sql"))
       .sort()
 
     // Check which migrations have been applied
     const appliedMigrations = await migrationClient`
       SELECT hash FROM __drizzle_migrations
     `
-    const appliedHashes = new Set(appliedMigrations.map((m) => m.hash))
+    const appliedHashes = new Set(appliedMigrations.map(m => m.hash))
 
     let appliedCount = 0
 
@@ -54,8 +51,8 @@ export async function runMigrations() {
       // Split by statements and filter out empty ones and comments
       const statements = migrationSQL
         .split(/;[\s\n]*(?:-->.*)?/)
-        .map((s) => s.trim())
-        .filter((s) => s.length > 0 && !s.startsWith("-->"))
+        .map(s => s.trim())
+        .filter(s => s.length > 0 && !s.startsWith("-->"))
 
       // Execute statements outside of transaction for idempotency
       let hasErrors = false

@@ -9,7 +9,7 @@ async function testOllama() {
   console.log("🧪 Testing Ollama with AI SDK...")
 
   try {
-    const result = await streamText({
+    const result = streamText({
       model: ollama("smollm2"),
       messages: [{ role: "user", content: "Say hello in 5 words or less" }],
     })
@@ -18,10 +18,10 @@ async function testOllama() {
 
     // Set a timeout
     const timeoutPromise = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error("Timeout after 10 seconds")), 10000)
+      setTimeout(() => reject(new Error("Timeout after 10 seconds")), 10000),
     )
 
-    const fullText = await Promise.race([result.text, timeoutPromise]) as string
+    const fullText = (await Promise.race([result.text, timeoutPromise])) as string
 
     console.log("✅ Done! Total length:", fullText.length)
     console.log("Full text:", fullText)

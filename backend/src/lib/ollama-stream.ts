@@ -48,7 +48,7 @@ export async function* streamOllamaChat(options: OllamaStreamOptions): AsyncGene
       if (done) break
 
       const chunk = decoder.decode(value, { stream: true })
-      const lines = chunk.split("\n").filter((line) => line.trim())
+      const lines = chunk.split("\n").filter(line => line.trim())
 
       for (const line of lines) {
         try {
@@ -61,7 +61,7 @@ export async function* streamOllamaChat(options: OllamaStreamOptions): AsyncGene
           if (data.done) {
             return
           }
-        } catch (parseError) {
+        } catch {
           // Skip malformed JSON lines
           console.warn("Failed to parse Ollama response line:", line)
         }
