@@ -1,6 +1,6 @@
 import Constants from "expo-constants"
 import React, { useState } from "react"
-import { Modal, Platform, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { Button, Linking, Modal, Platform, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { useTheme } from "../contexts/ThemeContext"
 
@@ -30,7 +30,7 @@ export const Header = () => {
         </TouchableOpacity>
       </View>
 
-      <Modal animationType="fade" transparent visible={menuVisible} onRequestClose={() => setMenuVisible(false)}>
+      <Modal animationType="slide" transparent visible={menuVisible} onRequestClose={() => setMenuVisible(false)}>
         <View style={styles.overlay}>
           <Pressable style={StyleSheet.absoluteFillObject} onPress={() => setMenuVisible(false)} />
           <View
@@ -47,10 +47,16 @@ export const Header = () => {
             <TouchableOpacity
               disabled
               onPress={() => {}}
-              style={[styles.loginButton, { backgroundColor: colors.primary }]}
+              style={[styles.loginButton, { backgroundColor: colors.primary, opacity: 0.2 }]}
             >
               <Text style={[styles.loginText, { color: colors.surface }]}>Log in</Text>
             </TouchableOpacity>
+
+            <Button
+              title="Visit GitHub for details"
+              color={colors.info}
+              onPress={() => Linking.openURL("https://github.com/SubZtep/autistas")}
+            />
           </View>
         </View>
       </Modal>
