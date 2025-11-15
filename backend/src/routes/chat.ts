@@ -1,7 +1,6 @@
 import type { ChatRequest, ChatResponse, ErrorResponse } from "@autistas/common"
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
 import { eq } from "drizzle-orm"
-import { SYSTEM_PROMPT } from "../config/ai.js"
 import { env } from "../config/env.js"
 import { conversations, db, messages } from "../db/index.js"
 import { streamOllamaChat } from "../lib/ollama-stream.js"
@@ -175,7 +174,6 @@ chat.post("/stream", async c => {
               baseURL: env.OLLAMA_BASE_URL,
               model: env.OLLAMA_MODEL,
               messages: llmMessages,
-              system: SYSTEM_PROMPT,
             })
 
             for await (const textChunk of stream) {
