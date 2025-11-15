@@ -1,8 +1,8 @@
-import React, { useMemo, useState } from "react"
+import FontAwesome from "@expo/vector-icons/FontAwesome"
+import React, { useState } from "react"
 import { Keyboard, KeyboardAvoidingView, Platform, StyleSheet, TextInput, TouchableOpacity, View } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
-import { getInputPlaceholder } from "../config/msg"
-import { useTheme } from "../contexts/ThemeContext"
+import { useTheme } from "../theme/ThemeContext"
 
 interface ChatInputProps {
   onSend: (message: string) => void
@@ -13,7 +13,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false }
   const { colors } = useTheme()
   const insets = useSafeAreaInsets()
   const [message, setMessage] = useState("")
-  const inputPlaceholder = useMemo(() => getInputPlaceholder(), [])
+  const [inputPlaceholder, setInputPlaceholder] = useState(getInputPlaceholder())
 
   const getUserMessage = () => {
     if (disabled) return ""
@@ -28,6 +28,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false }
     const msg = getUserMessage()
     if (msg) {
       onSend(msg)
+      setInputPlaceholder(getInputPlaceholder())
       setMessage("")
       Keyboard.dismiss()
     }
@@ -74,16 +75,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false }
             onPress={handleSend}
             disabled={!getUserMessage()}
           >
-            <View style={styles.sendIcon}>
-              <View
-                style={[
-                  styles.sendTriangle,
-                  {
-                    borderLeftColor: getUserMessage() ? colors.surface : colors.textTertiary,
-                  },
-                ]}
-              />
-            </View>
+            <FontAwesome name="send-o" size={24} color={getUserMessage() ? colors.surface : colors.textTertiary} />
           </TouchableOpacity>
         </View>
       </View>
@@ -98,18 +90,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   inputContainer: {
+    gap: 16,
     flexDirection: "row",
     alignItems: "flex-end",
   },
   input: {
     flex: 1,
-    height: 66,
     borderWidth: 1,
-    borderRadius: 22,
+    borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 12,
     fontSize: 16,
-    lineHeight: 20,
   },
   sendButton: {
     width: 44,
@@ -117,26 +108,19 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     justifyContent: "center",
     alignItems: "center",
-    marginLeft: 8,
-  },
-  sendIcon: {
-    width: 20,
-    height: 20,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  sendTriangle: {
-    width: 0,
-    height: 0,
-    backgroundColor: "transparent",
-    borderStyle: "solid",
-    borderLeftWidth: 14,
-    borderRightWidth: 0,
-    borderBottomWidth: 7,
-    borderTopWidth: 7,
-    borderRightColor: "transparent",
-    borderBottomColor: "transparent",
-    borderTopColor: "transparent",
-    marginLeft: 2,
   },
 })
+
+const INPUT_PLACEHOLDER = [
+  "Type your message...",
+  "Try “what is regression?”",
+  "Try “what is autism?”",
+  "Try “what is ADHD?”",
+  "Try “what is hypersensitivity?”",
+  "Try “what is hyposensitivity?”",
+  "Try “what is sensory-seeking?”",
+]
+
+export function getInputPlaceholder() {
+  return INPUT_PLACEHOLDER[Math.floor(Math.random() * INPUT_PLACEHOLDER.length)]
+}

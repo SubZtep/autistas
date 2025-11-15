@@ -11,7 +11,7 @@ export default {
     splash: {
       image: "./assets/splash-icon.png",
       resizeMode: "contain",
-      backgroundColor: "#ffffff",
+      backgroundColor: "#dedede",
     },
     ios: {
       supportsTablet: true,
@@ -23,7 +23,7 @@ export default {
     android: {
       adaptiveIcon: {
         foregroundImage: "./assets/adaptive-icon.png",
-        backgroundColor: "#ffffff",
+        backgroundColor: "#dedede",
       },
       edgeToEdgeEnabled: true,
       predictiveBackGestureEnabled: false,

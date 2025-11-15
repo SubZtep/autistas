@@ -1,6 +1,6 @@
 import React, { createContext, ReactNode, useContext, useEffect, useState } from "react"
 import { useColorScheme } from "react-native"
-import { Colors, ColorScheme, ThemeColors } from "../theme/colors"
+import { Colors, ColorScheme, ThemeColors } from "./colors"
 
 interface ThemeContextType {
   colorScheme: ColorScheme
@@ -13,7 +13,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const systemColorScheme = useColorScheme()
-  const [colorScheme, setColorScheme] = useState<ColorScheme>(systemColorScheme === "dark" ? "dark" : "light")
+  const [colorScheme, setColorScheme] = useState<ColorScheme>(systemColorScheme === "light" ? "light" : "dark")
 
   // Update theme when system theme changes
   useEffect(() => {

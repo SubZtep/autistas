@@ -1,7 +1,9 @@
+import AntDesign from "@expo/vector-icons/AntDesign"
 import React, { useEffect, useRef } from "react"
 import { ScrollView, StyleSheet, Text, View } from "react-native"
-import { getWelcomeMessage } from "../config/msg"
-import { useTheme } from "../contexts/ThemeContext"
+import { useTheme } from "../theme/ThemeContext"
+import WelcomeBadge from "./layout/WelcomeBadge"
+import ImageBg from "./ui/ImageBg"
 
 interface Message {
   id: string
@@ -24,19 +26,15 @@ export const Feed: React.FC<FeedProps> = ({ messages }) => {
     scrollViewRef.current?.scrollToEnd({ animated: true })
   }, [messages])
 
-  const welcome = getWelcomeMessage()
-
   return (
     <ScrollView
       ref={scrollViewRef}
       style={[styles.container, { backgroundColor: colors.background }]}
       contentContainerStyle={styles.contentContainer}
     >
+      <ImageBg />
       {messages.length === 0 ? (
-        <View style={styles.emptyState}>
-          <Text style={[styles.emptyTitle, { color: colors.primary }]}>{welcome.header}</Text>
-          <Text style={[styles.emptyText, { color: colors.textSecondary }]}>{welcome.body}</Text>
-        </View>
+        <WelcomeBadge />
       ) : (
         messages.map(message => (
           <View
@@ -54,7 +52,9 @@ export const Feed: React.FC<FeedProps> = ({ messages }) => {
             >
               <Text style={[styles.messageText, { color: colors.text }]}>
                 {message.text}
-                {message.isStreaming && <Text style={styles.cursor}>▊</Text>}
+                {message.isStreaming && (
+                  <AntDesign name="robot" size={16} color={colors.textTertiary} style={{ marginLeft: 2 }} />
+                )}
               </Text>
             </View>
           </View>
@@ -71,23 +71,6 @@ const styles = StyleSheet.create({
   contentContainer: {
     padding: 16,
     flexGrow: 1,
-  },
-  emptyState: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 32,
-  },
-  emptyTitle: {
-    fontSize: 28,
-    fontWeight: "600",
-    marginBottom: 12,
-    textAlign: "center",
-  },
-  emptyText: {
-    fontSize: 16,
-    textAlign: "center",
-    lineHeight: 24,
   },
   messageContainer: {
     marginBottom: 12,
@@ -109,9 +92,5 @@ const styles = StyleSheet.create({
   messageText: {
     fontSize: 16,
     lineHeight: 22,
-  },
-  cursor: {
-    opacity: 0.6,
-    marginLeft: 2,
   },
 })

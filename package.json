@@ -6,7 +6,7 @@
   "description": "Mobile app to help parents and caregivers of kids with autism",
   "author": "Andras Serfozo <subztep@gmail.com>",
   "license": "Unlicense",
-  "packageManager": "pnpm@10.20.0",
+  "packageManager": "pnpm@10.22.0",
   "scripts": {
     "db:studio": "pnpm --filter backend db:studio",
     "mobile": "pnpm --filter mobile start",

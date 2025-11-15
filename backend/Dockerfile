@@ -1,9 +1,9 @@
-FROM node:22.21.0-slim AS builder
+FROM node:24.11.1-slim AS builder
 
 ENV PNPM_HOME="/pnpm" \
   PATH="/pnpm:$PATH"
 
-RUN corepack enable && corepack prepare pnpm@10.20.0 --activate
+RUN corepack enable && corepack prepare pnpm@10.22.0 --activate
 WORKDIR /workspace
 
 # Copy workspace files
@@ -27,7 +27,7 @@ RUN pnpm --filter backend build
 RUN pnpm --filter backend --prod deploy --legacy /prod/backend
 RUN pnpm --filter @autistas/common --prod deploy --legacy /prod/common
 
-FROM node:22.21.0-slim
+FROM node:24.11.1-slim
 
 ENV NODE_ENV=production
 

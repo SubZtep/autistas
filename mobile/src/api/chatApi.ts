@@ -1,5 +1,5 @@
-import { API_URL } from "../config/api"
 import EventSource from "react-native-sse"
+import { API_URL } from "./config"
 
 export interface ChatMessage {
   role: "user" | "assistant"
@@ -50,7 +50,7 @@ export class ChatAPI {
         }),
       })
 
-      es.addEventListener("message", (event) => {
+      es.addEventListener("message", event => {
         try {
           const data: StreamResponse = JSON.parse(event.data || "{}")
 
@@ -72,12 +72,10 @@ export class ChatAPI {
         }
       })
 
-      es.addEventListener("error", (event) => {
+      es.addEventListener("error", event => {
         console.error("SSE error:", event)
         const errorMessage =
-          "message" in event && typeof event.message === "string"
-            ? event.message
-            : "Connection error"
+          "message" in event && typeof event.message === "string" ? event.message : "Connection error"
         onError(errorMessage)
         es?.close()
       })
