@@ -1,0 +1,31 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Check updated dependencies",
+      "type": "shell",
+      "command": "pnpm -r exec npx npm-check-updates",
+      "problemMatcher": []
+    },
+    {
+      "label": "Update all dependencies",
+      "type": "shell",
+      "command": "pnpm -r exec npx npm-check-updates -u && pnpm i -r",
+      "problemMatcher": []
+    },
+    {
+      "label": "Expo dependency resolution",
+      "type": "shell",
+      "command": "cd mobile && npx expo install --check",
+      "problemMatcher": []
+    },
+    {
+      "label": "Find unused dependencies",
+      "type": "shell",
+      "command": "npx knip",
+      "problemMatcher": []
+    }
+  ]
+}
