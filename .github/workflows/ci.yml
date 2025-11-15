@@ -2,9 +2,13 @@ name: CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
+    paths-ignore:
+      - "docs/**"
   pull_request:
-    branches: [main, develop]
+    branches: [main]
+    paths-ignore:
+      - "docs/**"
 
 jobs:
   backend-test:
@@ -87,9 +91,9 @@ jobs:
       - name: Apply version bumps
         uses: bahulneel/action-version@v0.47.3
         with:
-          strategy: 'apply-bump'
-          base: 'main'
-          branch: 'main'
+          strategy: "apply-bump"
+          base: "main"
+          branch: "main"
           tag_prereleases: false
 
   backend-docker:
