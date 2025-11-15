@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@autistas/common": "workspace:*",
+    "@expo/vector-icons": "^15.0.3",
     "@react-navigation/native": "^7.1.20",
     "@react-navigation/native-stack": "^7.6.3",
     "expo": "^54.0.23",

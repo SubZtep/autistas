@@ -3,8 +3,8 @@ import { StatusBar } from "expo-status-bar"
 import React, { useEffect } from "react"
 import { Platform } from "react-native"
 import { SafeAreaProvider } from "react-native-safe-area-context"
-import { ThemeProvider, useTheme } from "./src/contexts/ThemeContext"
 import { HomeScreen } from "./src/screens/HomeScreen"
+import { ThemeProvider, useTheme } from "./src/theme/ThemeContext"
 
 function AppContent() {
   const { isDark } = useTheme()

@@ -1,10 +1,10 @@
-import React, { useState, useRef } from "react"
-import { StyleSheet, View, Alert } from "react-native"
+import React, { useRef, useState } from "react"
+import { Alert, StyleSheet, View } from "react-native"
+import { chatAPI } from "../api/chatApi"
 import { ChatInput } from "../components/ChatInput"
 import { Feed } from "../components/Feed"
 import { Header } from "../components/Header"
-import { useTheme } from "../contexts/ThemeContext"
-import { chatAPI } from "../api/chatApi"
+import { useTheme } from "../theme/ThemeContext"
 
 interface Message {
   id: string
@@ -55,24 +55,12 @@ export const HomeScreen = () => {
       conversationIdRef.current,
       // onChunk
       (chunk: string) => {
-        setMessages(prev =>
-          prev.map(msg =>
-            msg.id === aiMessageId
-              ? { ...msg, text: msg.text + chunk }
-              : msg
-          )
-        )
+        setMessages(prev => prev.map(msg => (msg.id === aiMessageId ? { ...msg, text: msg.text + chunk } : msg)))
       },
       // onDone
       (conversationId: string) => {
         conversationIdRef.current = conversationId
-        setMessages(prev =>
-          prev.map(msg =>
-            msg.id === aiMessageId
-              ? { ...msg, isStreaming: false }
-              : msg
-          )
-        )
+        setMessages(prev => prev.map(msg => (msg.id === aiMessageId ? { ...msg, isStreaming: false } : msg)))
         setIsLoading(false)
         streamingMessageIdRef.current = null
       },
@@ -80,16 +68,12 @@ export const HomeScreen = () => {
       (error: string) => {
         console.error("Chat error:", error)
         setMessages(prev =>
-          prev.map(msg =>
-            msg.id === aiMessageId
-              ? { ...msg, text: `Error: ${error}`, isStreaming: false }
-              : msg
-          )
+          prev.map(msg => (msg.id === aiMessageId ? { ...msg, text: `Error: ${error}`, isStreaming: false } : msg)),
         )
         setIsLoading(false)
         streamingMessageIdRef.current = null
         Alert.alert("Error", `Failed to get response: ${error}`)
-      }
+      },
     )
   }
 

@@ -29,12 +29,3 @@ const getApiUrl = (): string => {
 }
 
 export const API_URL = getApiUrl()
-
-export const API_CONFIG = {
-  baseUrl: API_URL,
-  endpoints: {
-    health: "/health",
-    chat: "/api/chat",
-  },
-  timeout: 30000, // 30 seconds
-}

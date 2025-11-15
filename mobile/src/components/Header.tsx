@@ -1,8 +1,9 @@
+import Ionicons from "@expo/vector-icons/Ionicons"
 import Constants from "expo-constants"
 import React, { useState } from "react"
 import { Button, Linking, Modal, Platform, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
-import { useTheme } from "../contexts/ThemeContext"
+import { useTheme } from "../theme/ThemeContext"
 
 export const Header = () => {
   const { colors } = useTheme()
@@ -24,9 +25,7 @@ export const Header = () => {
         ]}
       >
         <TouchableOpacity onPress={() => setMenuVisible(true)} style={styles.menuButton}>
-          <View style={[styles.menuLine, { backgroundColor: colors.text }]} />
-          <View style={[styles.menuLine, { backgroundColor: colors.text }]} />
-          <View style={[styles.menuLine, { backgroundColor: colors.text }]} />
+          <Ionicons name="extension-puzzle-outline" size={32} color={colors.primary} />
         </TouchableOpacity>
       </View>
 
@@ -88,12 +87,6 @@ const styles = StyleSheet.create({
     height: 40,
     justifyContent: "center",
     alignItems: "center",
-  },
-  menuLine: {
-    width: 24,
-    height: 2.5,
-    borderRadius: 2,
-    marginVertical: 2.5,
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
