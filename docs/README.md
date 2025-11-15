@@ -16,7 +16,9 @@
 
 ### 🚧 Screenshot 🚧 🚧
 
-Common sense beats the guidelines this LLM was trained on. A GPU would probably make a bigger difference anyway. Basic level achieved.
+Common sense beats the guidelines this LLM was trained on. A GPU would probably make a bigger difference anyway. Basic level achieved with the mobile app, the LLM, and the API in between.
+
+-
 
 ![Screenshot](assets/au_screen_0_1.png)
 
